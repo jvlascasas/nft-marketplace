@@ -1,0 +1,113 @@
+@import "@fontsource/roboto-mono/latin-400.css";
+
+@import "@fontsource/roboto-mono/latin-500.css";
+
+@import "@fontsource/roboto-mono/latin-600.css";
+
+@import "@fontsource/roboto-mono/latin-700.css";
+
+@import "tailwindcss";
+
+/* Single CSS entry: foundations, shared components, then feature layouts.
+ * Imports stay here so route navigation cannot change the cascade. */
+
+@import "./styles/shared.css";
+
+@import "./app/layout.css";
+
+@import "./components/artwork.css";
+
+@import "./features/catalog/hero.css";
+
+@import "./features/catalog/filters.css";
+
+@import "./features/catalog/nft-card.css";
+
+@import "./features/catalog/catalog.css";
+
+@import "./features/catalog/curation.css";
+
+@import "./components/site-footer.css";
+
+@import "./features/catalog/market.css";
+
+@import "./features/favorites/favorites.css";
+
+@import "./features/catalog/related-collection.css";
+
+@import "./features/account/account.css";
+
+@import "./components/mobile-navigation.css";
+
+@import "./features/catalog/mobile.css";
+
+@import "./features/checkout/checkout.css";
+
+@import "./features/cart/cart.css";
+
+@import "./features/auth/auth.css";
+
+@theme inline {
+  --color-background: #170e09;
+  --color-foreground: #f3ede6;
+  --color-card: #231710;
+  --color-primary: #d89653;
+  --color-primary-foreground: #211307;
+  --color-border: #463125;
+  --color-muted: #322218;
+  --color-muted-foreground: #bcab96;
+  --font-sans: "Roboto Mono", ui-monospace, monospace;
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 24px;
+  }
+  body {
+    margin: 0;
+    min-width: 320px;
+    background: var(--color-background);
+    color: var(--color-foreground);
+    font: 13px/1.7 var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 4px;
+  }
+  button:not(:disabled), a, select {
+    cursor: pointer;
+  }
+  button, input, select {
+    font: inherit;
+  }
+  button:disabled {
+    cursor: not-allowed;
+    opacity: .45;
+  }
+  input, select {
+    accent-color: var(--color-primary);
+  }
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+  h1, h2, h3, p {
+    margin: 0;
+  }
+  fieldset {
+    min-width: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}

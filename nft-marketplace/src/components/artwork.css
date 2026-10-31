@@ -1,0 +1,67 @@
+.artwork {
+  display: block;
+  aspect-ratio: 1;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.artwork-placeholder {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  color: #655f4b;
+  background: #d9d9c2;
+  border: 1px solid #ffffff24;
+}
+
+.artwork-placeholder > span {
+  font-size: 11px;
+  letter-spacing: .2px;
+}
+
+.artwork-placeholder small {
+  font-size: 10px;
+  opacity: .7;
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+}
+
+.tone-sage {
+  background: #d3d6bd;
+}
+
+.tone-ivory {
+  background: #e2dec8;
+}
+
+.tone-mint {
+  background: #c8d9ca;
+}
+
+.tone-sand {
+  background: #e4d7ae;
+}
+
+@media (max-width: 640px) {
+  .artwork-placeholder {
+    gap: 8px;
+  }
+  .artwork-placeholder > span {
+    font-size: 9px;
+  }
+  .artwork-placeholder small {
+    font-size: 8px;
+    bottom: 8px;
+    right: 8px;
+  }
+  .artwork-placeholder > svg {
+    width: 26px;
+    height: 26px;
+  }
+}

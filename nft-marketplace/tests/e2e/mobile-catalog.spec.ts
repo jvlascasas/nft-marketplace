@@ -1,0 +1,183 @@
+import { expect, test, type Page } from '@playwright/test'
+
+test.beforeEach(({ browserName }, info) => test.skip(info.project.name !== 'mobile' || browserName !== 'chromium', 'Referências Mobile/Início e Mobile/Detalhes do NFT.'))
+test.use({ isMobile: true, hasTouch: true })
+
+test('destaque mobile troca NFTs ao deslizar, circula os slides e preserva gestos verticais', async ({ page }) => {
+  await page.goto('/')
+  const hero = page.getByRole('region', { name: 'Destaques', exact: true })
+  await expect(hero.locator('.hero-dots button')).toHaveCount(3)
+  await expect(hero.getByRole('button', { name: /Favoritar|Remover dos favoritos/ })).toHaveCount(0)
+  const dots = hero.locator('.hero-dots button')
+  const initialImage = await hero.locator('.hero-art img').getAttribute('src')
+  const touch = await page.context().newCDPSession(page)
+  async function drag(horizontal: number, vertical = 0) {
+    const box = (await hero.boundingBox())!
+    const start = { x: box.x + box.width * .72, y: box.y + 60 }
+    await touch.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [start] })
+    for (let step = 1; step <= 6; step++) await touch.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: start.x + horizontal * step / 6, y: start.y + vertical * step / 6 }] })
+    await touch.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] })
+  }
+  try {
+    await expect(dots.nth(0)).toHaveAttribute('aria-pressed', 'true')
+    await drag(-110)
+    await expect(dots.nth(1)).toHaveAttribute('aria-pressed', 'true')
+    await expect(hero.locator('.hero-art img')).not.toHaveAttribute('src', initialImage!)
+    await drag(-110)
+    await expect(dots.nth(2)).toHaveAttribute('aria-pressed', 'true')
+    await drag(-110)
+    await expect(dots.nth(0)).toHaveAttribute('aria-pressed', 'true')
+    await drag(70)
+    await expect(dots.nth(2)).toHaveAttribute('aria-pressed', 'true')
+    await drag(-110)
+    await expect(dots.nth(0)).toHaveAttribute('aria-pressed', 'true')
+    await drag(12)
+    await expect(dots.nth(0)).toHaveAttribute('aria-pressed', 'true')
+    await drag(5, -65)
+    await expect(dots.nth(0)).toHaveAttribute('aria-pressed', 'true')
+  } finally { await touch.detach() }
+})
+
+test('pontos do destaque permitem toque e teclado', async ({ page }) => {
+  await page.goto('/')
+  const dots = page.locator('.hero-dots button')
+  await expect(dots).toHaveCount(3)
+  await dots.nth(2).tap()
+  await expect(dots.nth(2)).toHaveAttribute('aria-pressed', 'true')
+  await dots.nth(1).focus()
+  await page.keyboard.press('Enter')
+  await expect(dots.nth(1)).toHaveAttribute('aria-pressed', 'true')
+})
+
+async function ready(page: Page) {
+  await page.evaluate(() => document.fonts.ready)
+  await page.evaluate(async () => { await Promise.all([...document.images].filter(image => image.getBoundingClientRect().width > 0).map(image => { image.loading = 'eager'; return image.decode() })) })
+}
+
+test('Início segue o frame 414 × 896 com busca, destaque, cards e navegação inferior', async ({ page }, info) => {
+  await page.setViewportSize({ width: 414, height: 896 })
+  await page.goto('/')
+  await expect(page.getByTestId('nft-card')).toHaveCount(9)
+  await expect(page.getByRole('banner')).toHaveCount(0)
+  await expect(page.getByRole('contentinfo')).toHaveCount(0)
+  await expect(page.getByRole('textbox', { name: 'Buscar NFTs' })).toHaveAttribute('placeholder', 'Explorar coleções')
+  await expect(page.getByTestId('nft-card').nth(3)).toContainText('Golden Beat #207')
+  const first = await page.getByTestId('nft-card').nth(0).boundingBox()
+  const second = await page.getByTestId('nft-card').nth(1).boundingBox()
+  expect(second!.y - first!.y).toBe(32)
+  await ready(page)
+  await expect(page).toHaveScreenshot('mobile-home-figma.png', { animations: 'disabled' })
+  await page.screenshot({ path: info.outputPath('mobile-home-preview.png'), animations: 'disabled' })
+  await page.getByRole('navigation', { name: 'Navegação mobile', exact: true }).getByRole('link', { name: 'Mercado', exact: true }).tap()
+  await expect(page).toHaveURL(/\/mercado$/)
+  await page.getByRole('link', { name: 'Voltar para Início', exact: true }).tap()
+  await expect(page.getByRole('textbox', { name: 'Buscar NFTs' })).toBeVisible()
+})
+
+test('busca, filtros e ordenação funcionam por toque e permanecem após refresh', async ({ page }) => {
+  await page.goto('/')
+  const filters = page.getByRole('button', { name: 'Abrir filtros', exact: true })
+  await filters.tap()
+  const sheet = page.getByRole('dialog', { name: 'Filtrar NFTs', exact: true })
+  await sheet.getByRole('checkbox', { name: 'Arte digital', exact: true }).check()
+  await sheet.getByRole('checkbox', { name: 'Ethereum', exact: true }).check()
+  await sheet.getByLabel('Ordenar por:').selectOption('price-asc')
+  await sheet.getByRole('button', { name: 'Concluir', exact: true }).tap()
+  await expect(sheet).toBeHidden()
+  await page.getByRole('textbox', { name: 'Buscar NFTs' }).fill('Emerald')
+  await page.getByRole('textbox', { name: 'Buscar NFTs' }).press('Enter')
+  await expect(page.getByTestId('nft-card')).toHaveCount(2)
+  await page.reload()
+  await expect(page.getByRole('textbox', { name: 'Buscar NFTs' })).toHaveValue('Emerald')
+  await filters.tap()
+  await expect(sheet.getByLabel('Ordenar por:')).toHaveValue('price-asc')
+  await expect(sheet.getByRole('checkbox', { name: 'Ethereum', exact: true })).toBeChecked()
+  await sheet.getByRole('button', { name: 'Concluir', exact: true }).tap()
+  await page.getByRole('button', { name: 'Limpar filtros', exact: true }).tap()
+  await expect(page.getByTestId('nft-card')).toHaveCount(9)
+})
+
+test('faixa de preço responde ao toque e filtra os NFTs', async ({ page }) => {
+  await page.goto('/')
+  await page.getByRole('button', { name: 'Abrir filtros', exact: true }).tap()
+  const sheet = page.getByRole('dialog', { name: 'Filtrar NFTs', exact: true })
+  await sheet.getByRole('slider', { name: 'Preço mínimo na faixa', exact: true }).scrollIntoViewIfNeeded()
+  const track = await sheet.locator('.price-track').boundingBox()
+  if (!track) throw new Error('Faixa de preço não encontrada')
+  await page.touchscreen.tap(track.x + track.width / 4, track.y + track.height / 2)
+  await expect(sheet.getByRole('textbox', { name: 'Mínimo', exact: true })).toHaveValue(/^2,[45]/)
+  await sheet.getByRole('button', { name: 'Aplicar preço', exact: true }).tap()
+  await sheet.getByRole('button', { name: 'Concluir', exact: true }).tap()
+  await expect(page.getByTestId('nft-card')).toHaveCount(3)
+  await expect(page.getByTestId('nft-price').first()).toHaveText('3,75 ETH')
+  await page.getByRole('button', { name: 'Limpar filtros', exact: true }).tap()
+  await expect(page.getByTestId('nft-card')).toHaveCount(9)
+})
+
+test('Detalhes segue o frame 414 × 896 e abre avaliações e imagem ampliada', async ({ page }, info) => {
+  await page.setViewportSize({ width: 414, height: 896 })
+  await page.goto('/mercado')
+  await expect(page.getByRole('heading', { name: 'Emerald Ape #042', level: 1 })).toBeVisible()
+  await ready(page)
+  await expect(page).toHaveScreenshot('mobile-detail-figma.png', { animations: 'disabled' })
+  await page.screenshot({ path: info.outputPath('mobile-detail-preview.png'), animations: 'disabled' })
+  await page.getByRole('button', { name: 'Ampliar imagem', exact: true }).tap()
+  await expect(page.getByRole('dialog', { name: 'Emerald Ape #042', exact: true })).toBeVisible()
+  await page.getByRole('button', { name: 'Fechar imagem ampliada', exact: true }).tap()
+  await page.getByRole('button', { name: '4,8 de 5 estrelas; 19 avaliações de colecionadores', exact: true }).tap()
+  const dialog = page.getByRole('dialog', { name: 'Detalhes e avaliações', exact: true })
+  await expect(dialog.getByRole('tab', { name: 'Avaliações de colecionadores (19)', exact: true })).toHaveAttribute('aria-selected', 'true')
+  await expect(dialog.locator('.review-list article')).toHaveCount(19)
+  await dialog.getByRole('tab', { name: 'Detalhes do NFT', exact: true }).tap()
+  await expect(dialog.getByRole('tabpanel')).toContainText('metadados armazenados no IPFS')
+  await dialog.getByRole('button', { name: 'Fechar detalhes e avaliações', exact: true }).tap()
+  await expect(dialog).toBeHidden()
+})
+
+test('edição, quantidade e compra usam o mesmo carrinho e respeitam o estoque', async ({ page }) => {
+  await page.goto('/nfts/emerald-ape-042')
+  await expect(page.getByRole('button', { name: '1/1 — esgotada', exact: true })).toBeDisabled()
+  await page.getByRole('button', { name: 'Aumentar quantidade', exact: true }).tap()
+  await page.getByRole('button', { name: 'Aumentar quantidade', exact: true }).tap()
+  await expect(page.getByRole('button', { name: 'Aumentar quantidade', exact: true })).toBeDisabled()
+  await page.getByRole('button', { name: 'ABERTA', exact: true }).tap()
+  await expect(page.locator('.mobile-purchase-price')).toHaveText('0,49 ETH')
+  await expect(page.getByLabel('Quantidade selecionada', { exact: true })).toHaveText('1')
+  await page.getByRole('button', { name: 'Comprar NFT', exact: true }).tap()
+  await expect(page).toHaveURL(/\/carrinho$/)
+  await expect(page.getByTestId('cart-total')).toHaveText('27,336392 ETH')
+})
+
+test('barra inferior abre conta e carrinho sem cobrir o fim do catálogo', async ({ page }) => {
+  await page.goto('/')
+  const navigation = page.getByRole('navigation', { name: 'Navegação mobile', exact: true })
+  await navigation.getByRole('link', { name: 'Entrar', exact: true }).tap()
+  await expect(page.getByRole('dialog', { name: 'Login', exact: true })).toBeVisible()
+  await page.getByRole('dialog', { name: 'Login', exact: true }).getByRole('button', { name: 'Fechar', exact: false }).tap()
+  await expect(navigation.getByRole('link', { name: 'Entrar', exact: true })).toBeFocused()
+  await navigation.getByRole('link', { name: /^Carrinho(?:\s|$)/ }).tap()
+  await expect(page).toHaveURL(/\/carrinho$/)
+  await page.goto('/')
+  await page.getByRole('button', { name: 'Página 2', exact: true }).scrollIntoViewIfNeeded()
+  const button = await page.getByRole('button', { name: 'Página 2', exact: true }).boundingBox()
+  const bar = await navigation.boundingBox()
+  expect(button!.y + button!.height).toBeLessThanOrEqual(bar!.y)
+  await page.getByRole('button', { name: 'Página 2', exact: true }).tap()
+  await expect(page.getByTestId('nft-card').first()).toContainText('Mint Wanderer')
+})
+
+for (const width of [320, 360, 390, 414]) {
+  test('Início e Detalhes sem overflow em ' + width + ' px', async ({ page }) => {
+    await page.setViewportSize({ width, height: 844 })
+    for (const route of ['/', '/mercado']) {
+      await page.goto(route)
+      await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)
+      if (route === '/mercado') {
+        const button = await page.getByRole('button', { name: 'Comprar NFT', exact: true }).boundingBox()
+        expect(button!.x).toBeGreaterThanOrEqual(0)
+        expect(button!.x + button!.width).toBeLessThanOrEqual(width)
+      }
+    }
+  })
+}

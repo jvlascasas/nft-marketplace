@@ -1,0 +1,94 @@
+.mobile-home-navigation {
+  display: none;
+}
+
+.mobile-asset-icon {
+  display: block;
+  flex-shrink: 0;
+  object-fit: contain;
+}
+
+@media (max-width: 640px) {
+  .mobile-home-navigation {
+    position: fixed;
+    z-index: 30;
+    isolation: isolate;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    gap: 10px;
+    min-height: 96px;
+    padding: 24px 20px calc(24px + env(safe-area-inset-bottom));
+    color: #c7ac7f;
+  }
+  .mobile-home-navigation::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    pointer-events: none;
+    top: -39px;
+    left: 0;
+    right: 0;
+    height: 135px;
+    background: url('../assets/navigation-background.png?inline') center top / 100% 135px no-repeat;
+  }
+  .mobile-home-navigation::after {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    pointer-events: none;
+    top: 95px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #271913;
+  }
+  .mobile-home-navigation > a {
+    position: relative;
+    display: grid;
+    place-items: center;
+    flex: 0 0 44px;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    box-shadow: none;
+  }
+  .mobile-home-navigation .mobile-account-button {
+    position: relative;
+    display: grid;
+    place-items: center;
+    flex: 0 0 44px;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    box-shadow: none;
+  }
+  .mobile-home-navigation .mobile-home-active {
+    color: #e3a05a;
+  }
+  .mobile-home-navigation .mobile-market-link {
+    position: relative;
+    flex-basis: 64px;
+    width: 64px;
+    height: 64px;
+    margin-top: -76px;
+    border-radius: 50%;
+    color: #f0d9b6;
+    background: linear-gradient(145deg, #aa6f33c9, #d29555);
+    box-shadow: 0 0 0 12px #c9914233;
+  }
+  .mobile-home-navigation .cart-badge {
+    right: 0;
+    top: 0;
+    font-size: 8px;
+  }
+}

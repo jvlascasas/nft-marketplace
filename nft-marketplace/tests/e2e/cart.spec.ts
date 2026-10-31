@@ -1,0 +1,152 @@
+import { expect, test, type Page } from '@playwright/test'
+
+const green = 'Emerald Ape #042'
+const violet = 'Violet Nomad #314'
+const ivory = 'Ivory Baron #088'
+function row(page: Page, name: string) { return page.getByTestId('cart-item').filter({ hasText: name }) }
+
+test('cenário do Figma: três itens, valores precisos e refresh', async ({ page }) => {
+  await page.goto('/carrinho')
+  await expect(page.getByTestId('cart-item')).toHaveCount(3)
+  await expect(page.getByTestId('cart-subtotal')).toHaveText('26,83 ETH')
+  await expect(page.getByTestId('cart-fee')).toHaveText('0,016098 ETH')
+  await expect(page.getByTestId('cart-total')).toHaveText('26,846098 ETH')
+  await expect(page.locator('.cart-badge')).toHaveText('17')
+  await page.reload()
+  await expect(page.getByTestId('cart-total')).toHaveText('26,846098 ETH')
+  await expect(row(page, green).getByLabel('Quantidade selecionada de ' + green, { exact: true })).toHaveText('2')
+})
+
+test('quantidades respeitam limites e atualizam cotação e contador', async ({ page }) => {
+  await page.goto('/carrinho')
+  await row(page, green).getByRole('button', { name: 'Aumentar quantidade de ' + green, exact: true }).click()
+  await expect(page.getByTestId('cart-subtotal')).toHaveText('28,02 ETH')
+  await expect(page.getByTestId('cart-total')).toHaveText('28,036812 ETH')
+  await expect(row(page, green).getByRole('button', { name: 'Aumentar quantidade de ' + green, exact: true })).toBeDisabled()
+  await expect(page.locator('.cart-badge')).toHaveText('18')
+  await row(page, green).getByRole('button', { name: 'Diminuir quantidade de ' + green, exact: true }).click()
+  await expect(page.getByTestId('cart-total')).toHaveText('26,846098 ETH')
+  await row(page, green).getByRole('button', { name: 'Diminuir quantidade de ' + green, exact: true }).click()
+  await expect(row(page, green).getByRole('button', { name: 'Diminuir quantidade de ' + green, exact: true })).toBeDisabled()
+  await expect(page.getByTestId('cart-total')).toHaveText('25,655384 ETH')
+  await page.reload()
+  await expect(row(page, green).getByLabel('Quantidade selecionada de ' + green, { exact: true })).toHaveText('1')
+})
+
+test('remoção otimista retorna ao estado anterior em caso de falha', async ({ page }) => {
+  await page.addInitScript(() => localStorage.setItem('nft-marketplace:scenario', 'cart-error'))
+  await page.goto('/carrinho')
+  await expect(page.getByTestId('cart-item')).toHaveCount(3)
+  await page.getByRole('button', { name: 'Remover ' + violet, exact: true }).click()
+  await expect(page.getByTestId('cart-item')).toHaveCount(2)
+  await expect(page.locator('.cart-notice')).toContainText('Não foi possível atualizar')
+  await expect(page.getByTestId('cart-item')).toHaveCount(3)
+  await expect(page.getByTestId('cart-total')).toHaveText('26,846098 ETH')
+  await page.evaluate(() => localStorage.setItem('nft-marketplace:scenario', 'default'))
+  await page.getByRole('button', { name: 'Remover ' + violet, exact: true }).click()
+  await expect(page.getByTestId('cart-total')).toHaveText('18,501094 ETH')
+  await expect(page.getByTestId('cart-item')).toHaveCount(2)
+  await page.reload()
+  await expect(page.getByTestId('cart-item')).toHaveCount(2)
+})
+
+test('cupom válido, inválido, expirado e remoção preservam os itens', async ({ page }) => {
+  await page.goto('/carrinho')
+  const code = page.getByRole('textbox', { name: 'Código promocional', exact: true })
+  await code.fill('INVALIDO')
+  await page.getByRole('button', { name: 'Aplicar', exact: true }).click()
+  await expect(page.getByRole('alert')).toContainText('inválido')
+  await code.fill('EXPIRADO')
+  await page.getByRole('button', { name: 'Aplicar', exact: true }).click()
+  await expect(page.getByRole('alert')).toContainText('expirou')
+  await code.fill('kurio10')
+  await page.getByRole('button', { name: 'Aplicar', exact: true }).click()
+  await expect(page.getByTestId('cart-discount')).toHaveText('(-) 2,683')
+  await expect(page.getByTestId('cart-fee')).toHaveText('0,0144882 ETH')
+  await expect(page.getByTestId('cart-total')).toHaveText('24,1614882 ETH')
+  await page.reload()
+  await expect(page.getByTestId('cart-fee')).toHaveText('0,0144882 ETH')
+  await expect(page.getByTestId('cart-total')).toHaveText('24,1614882 ETH')
+  await page.getByRole('button', { name: 'Remover cupom', exact: true }).click()
+  await expect(page.getByTestId('cart-total')).toHaveText('26,846098 ETH')
+  await expect(page.getByTestId('cart-item')).toHaveCount(3)
+})
+
+test('estado vazio, adição a partir do detalhe e estoque entre edições', async ({ page }) => {
+  await page.addInitScript(() => localStorage.setItem('nft-marketplace:scenario', 'cart-empty'))
+  await page.goto('/carrinho')
+  await expect(page.getByRole('heading', { name: 'Seu carrinho está vazio', exact: true })).toBeVisible()
+  await page.goto('/mercado')
+  await page.getByRole('button', { name: 'ABERTA', exact: true }).click()
+  await page.getByRole('button', { name: /^(COMPRAR|Comprar NFT)$/ }).click()
+  await expect(page).toHaveURL(/\/carrinho$/)
+  await expect(page.getByTestId('cart-item')).toHaveCount(1)
+  await expect(page.getByTestId('cart-total')).toHaveText('0,490294 ETH')
+  await page.goto('/mercado')
+  await page.getByRole('button', { name: 'Aumentar quantidade', exact: true }).click()
+  await page.getByRole('button', { name: 'Aumentar quantidade', exact: true }).click()
+  await page.getByRole('button', { name: /^(COMPRAR|Comprar NFT)$/ }).click()
+  await expect(page.getByRole('alert')).toContainText('disponibilidade')
+  await page.getByRole('button', { name: 'Diminuir quantidade', exact: true }).click()
+  await page.getByRole('button', { name: /^(COMPRAR|Comprar NFT)$/ }).click()
+  await expect(page).toHaveURL(/\/carrinho$/)
+  await expect(page.getByTestId('cart-item')).toHaveCount(2)
+  await expect(page.getByTestId('cart-total')).toHaveText('2,871722 ETH')
+  await page.reload()
+  await expect(page.getByTestId('cart-item')).toHaveCount(2)
+})
+
+test('remover todos os itens mantém o estado vazio após refresh', async ({ page }) => {
+  await page.goto('/carrinho')
+  for (const name of [green, violet, ivory]) {
+    await page.getByRole('button', { name: 'Remover ' + name, exact: true }).click()
+    await expect(page.locator('.cart-notice')).toHaveText('Item removido do carrinho.')
+  }
+  await expect(page.getByRole('heading', { name: 'Seu carrinho está vazio', exact: true })).toBeVisible()
+  await expect(page.locator('.cart-badge')).toHaveCount(0)
+  await page.reload()
+  await expect(page.getByRole('heading', { name: 'Seu carrinho está vazio', exact: true })).toBeVisible()
+})
+
+test('cotação é revalidada antes de pedir conexão sem criar pedido', async ({ page }) => {
+  await page.goto('/carrinho')
+  await page.getByRole('button', { name: 'Conectar e finalizar', exact: true }).click()
+  const dialog = page.getByRole('dialog', { name: 'Conecte sua conta', exact: true })
+  await expect(dialog).toBeVisible()
+  await expect(dialog).toContainText('26,846098 ETH')
+  await expect(dialog).toContainText('Nenhum pedido foi criado')
+  await page.keyboard.press('Escape')
+  await expect(page.getByRole('button', { name: 'Conectar e finalizar', exact: true })).toBeFocused()
+  await expect(page.getByTestId('cart-item')).toHaveCount(3)
+})
+
+test('duas abas não sobrescrevem alterações com versões antigas', async ({ page, context }) => {
+  await page.goto('/carrinho')
+  await expect(page.getByTestId('cart-item')).toHaveCount(3)
+  const other = await context.newPage()
+  await other.goto('/carrinho')
+  await expect(other.getByTestId('cart-item')).toHaveCount(3)
+  await row(page, green).getByRole('button', { name: 'Aumentar quantidade de ' + green, exact: true }).click()
+  await expect(page.getByTestId('cart-total')).toHaveText('28,036812 ETH')
+  await row(other, violet).getByRole('button', { name: 'Aumentar quantidade de ' + violet, exact: true }).click()
+  await expect(other.locator('.cart-notice')).toContainText('outra operação')
+  await expect(row(other, green).getByLabel('Quantidade selecionada de ' + green, { exact: true })).toHaveText('3')
+  await expect(row(other, violet).getByLabel('Quantidade selecionada de ' + violet, { exact: true })).toHaveText('6')
+})
+
+test('carrinho do Figma em desktop e mobile', async ({ page }, testInfo) => {
+  await page.goto('/carrinho')
+  await expect(page.getByTestId('cart-item')).toHaveCount(3)
+  await expect(page.getByTestId('cart-total')).toHaveText('26,846098 ETH')
+  await expect(page.getByTestId('nft-card')).toHaveCount(5)
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)
+  await page.evaluate(() => document.fonts.ready)
+  await page.evaluate(async () => {
+    await Promise.all(Array.from(document.images).map(image => {
+      image.loading = 'eager'
+      return image.decode()
+    }))
+  })
+  await expect(page).toHaveScreenshot('cart.png', { fullPage: true, animations: 'disabled' })
+  await page.screenshot({ path: testInfo.outputPath('cart-preview.png'), animations: 'disabled' })
+})

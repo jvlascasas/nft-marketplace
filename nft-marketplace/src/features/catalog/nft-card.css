@@ -1,0 +1,149 @@
+.nft-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  column-gap: 24px;
+  row-gap: 36px;
+}
+
+.nft-card {
+  min-width: 0;
+  position: relative;
+}
+
+.nft-card-link {
+  display: block;
+  border-radius: 8px;
+}
+
+.nft-card-art {
+  position: relative;
+  padding: 12px;
+  background: var(--color-card);
+}
+
+.nft-card-art .artwork {
+  border-radius: 12px;
+}
+
+.nft-card-copy {
+  padding: 10px 2px 0;
+}
+
+.nft-card h3 {
+  font-size: 12px;
+  font-weight: 400;
+  overflow-wrap: anywhere;
+}
+
+.nft-price {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  color: var(--color-primary);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.6;
+}
+
+.nft-price del {
+  color: #9f8a75;
+  font-weight: 400;
+  font-size: 11px;
+}
+
+.nft-meta {
+  font-size: 9px;
+  margin-top: 4px;
+  color: var(--color-muted-foreground);
+}
+
+.nft-card-arrow {
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  display: grid;
+  place-items: center;
+  color: var(--color-primary-foreground);
+  opacity: 0;
+  transition: opacity .15s;
+}
+
+.nft-card-link:hover .nft-card-arrow, .nft-card-link:focus-visible .nft-card-arrow {
+  opacity: 1;
+}
+
+.pagination {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 40px;
+}
+
+.page-button {
+  width: 36px;
+  height: 36px;
+  border: 1px solid #3b281b;
+  background: none;
+  color: var(--color-foreground);
+  display: grid;
+  place-items: center;
+}
+
+.page-button[aria-current=page] {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-primary-foreground);
+}
+
+@media (max-width: 1100px) {
+  .nft-grid {
+    gap: 24px 16px;
+  }
+  .nft-card-art {
+    padding: 8px;
+  }
+  .nft-card h3 {
+    font-size: 10px;
+  }
+  .nft-price {
+    font-size: 12px;
+  }
+  .nft-card-art .artwork-placeholder > span {
+    font-size: 9px;
+  }
+}
+
+@media (max-width: 640px) {
+  .nft-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px 14px;
+  }
+  .nft-card h3 {
+    font-size: 10px;
+  }
+  .nft-meta {
+    font-size: 8px;
+  }
+  .nft-price {
+    font-size: 12px;
+  }
+  .nft-card-art {
+    padding: 6px;
+  }
+  .nft-card-art .artwork {
+    border-radius: 8px;
+  }
+  .pagination {
+    justify-content: center;
+    margin-top: 32px;
+  }
+  .page-button {
+    width: 38px;
+    height: 40px;
+  }
+}

@@ -1,0 +1,161 @@
+.favorite-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  color: #d5944c;
+}
+
+.favorite-button img {
+  width: 20px;
+  height: 18px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.favorite-button:disabled {
+  cursor: progress;
+  opacity: .65;
+}
+
+.favorite-button:focus-visible {
+  outline: 2px solid #efa94f;
+  outline-offset: 4px;
+}
+
+.favorite-control {
+  display: inline-flex;
+  position: relative;
+}
+
+.nft-card > .favorite-control, .nft-card > .nft-card-favorite {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 2;
+}
+
+.nft-card-favorite {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #322015;
+  border: 1px solid #624027;
+}
+
+.favorite-error {
+  position: absolute;
+  z-index: 5;
+  top: 100%;
+  right: 0;
+  min-width: 210px;
+  max-width: 260px;
+  padding: 10px;
+  color: #ffe0cc;
+  background: #322015;
+  border: 1px solid #bd8050;
+  font-size: 11px;
+  line-height: 1.5;
+  box-shadow: 0 6px 20px #0008;
+}
+
+.favorite-control-labeled {
+  position: relative;
+}
+
+.favorites-page h1 {
+  font-size: 24px;
+}
+
+.favorites-intro {
+  color: #c4a77c;
+  margin: 12px 0 28px;
+  font-size: 13px;
+}
+
+.favorites-grid {
+  display: grid;
+  grid-template-columns: repeat(3,minmax(0,1fr));
+  gap: 24px;
+}
+
+.favorites-empty {
+  padding: 50px 20px;
+  text-align: center;
+  border: 1px solid #4d3424;
+}
+
+.favorites-empty p {
+  margin: 16px 0 24px;
+  color: #c4a77c;
+  font-size: 13px;
+}
+
+.favorites-back {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .favorite-error {
+    position: fixed;
+    top: auto;
+    bottom: calc(160px + env(safe-area-inset-bottom));
+    left: 16px;
+    right: 16px;
+    min-width: 0;
+    max-width: none;
+  }
+  .detail-purchase-actions > .favorite-control:has(.detail-favorite) {
+    display: none;
+  }
+  .nft-card > .favorite-control, .nft-card > .nft-card-favorite {
+    top: 8px;
+    right: 8px;
+  }
+  .nft-card-favorite {
+    width: 32px;
+    height: 32px;
+    border: 0;
+  }
+  .favorites-page .account-layout {
+    display: block;
+    padding: 24px 0 130px;
+    min-height: 100svh;
+  }
+  .favorites-page .account-sidebar {
+    display: none;
+  }
+  .favorites-page .favorites-back {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 28px;
+    color: #cfb28c;
+    font-size: 12px;
+  }
+  .favorites-grid {
+    grid-template-columns: repeat(2,minmax(0,1fr));
+    gap: 20px 12px;
+  }
+  .favorites-page .nft-card-art {
+    padding: 12px 4px 20px;
+    background: #2a1910;
+    border-radius: 20px;
+  }
+  .favorites-page .nft-card-copy {
+    padding: 14px 4px;
+  }
+  .favorites-page .nft-card h3 {
+    font-size: 13px;
+  }
+  .favorites-page .nft-meta {
+    display: none;
+  }
+  .favorites-page .nft-price {
+    font-size: 14px;
+  }
+  .favorites-page .mobile-home-navigation .mobile-home-active {
+    color: #cfb28c;
+  }
+}

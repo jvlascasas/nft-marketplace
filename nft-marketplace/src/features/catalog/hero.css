@@ -1,0 +1,268 @@
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 450px;
+  gap: 64px;
+  align-items: center;
+  padding: 32px 0 96px;
+}
+
+.hero-copy {
+  padding-left: 40px;
+}
+
+.hero-eyebrow {
+  letter-spacing: 1px;
+  margin-bottom: 14px;
+  font-size: 13px;
+}
+
+.hero h1 {
+  font-size: clamp(28px, 3.2vw, 44px);
+  font-weight: 700;
+  line-height: 1.6;
+  letter-spacing: -.8px;
+}
+
+.hero-description {
+  max-width: 570px;
+  margin: 12px 0 30px;
+  color: var(--color-muted-foreground);
+  line-height: 1.8;
+  font-size: 13px;
+}
+
+.hero-cta {
+  font-size: 13px;
+  border-radius: 4px;
+  padding-inline: 24px;
+}
+
+.hero-pagination {
+  margin-top: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 22px;
+}
+
+.hero-dots {
+  display: flex;
+  gap: 0;
+}
+
+.hero-dots button {
+  width: 24px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  background: none;
+  border: 0;
+  padding: 0;
+  min-width: 24px;
+  min-height: 24px;
+}
+
+.hero-dots span {
+  width: 7px;
+  height: 7px;
+  border-radius: 100%;
+  background: #5a3720;
+}
+
+.hero-dots button[aria-pressed=true] span {
+  background: var(--color-primary);
+}
+
+.hero-arrows {
+  display: flex;
+  gap: 4px;
+}
+
+.hero-arrows .icon-button {
+  width: 32px;
+  height: 32px;
+}
+
+.hero-art {
+  position: relative;
+  aspect-ratio: 1;
+  min-width: 0;
+}
+
+.hero-art > .artwork {
+  border-radius: 24px;
+}
+
+.hero-art > .artwork-placeholder svg {
+  width: 54px;
+  height: 54px;
+}
+
+.hero-art > .artwork-placeholder > span {
+  font-size: 13px;
+}
+
+.hero-caption {
+  position: absolute;
+  left: 20px;
+  right: 20px;
+  bottom: 18px;
+  color: #454833;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  gap: 12px;
+}
+
+.hero-caption span {
+  font-size: 9px;
+  letter-spacing: 1px;
+}
+
+.hero-error {
+  height: 100%;
+  padding: 24px;
+  border: 1px solid var(--color-border);
+  border-radius: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  text-align: center;
+}
+
+@media (max-width: 1100px) {
+  .hero {
+    grid-template-columns: minmax(0, 1fr) 38%;
+    gap: 36px;
+  }
+  .hero-copy {
+    padding-left: 16px;
+  }
+  .hero h1 {
+    font-size: 32px;
+  }
+}
+
+@media (max-width: 900px) {
+  .hero {
+    gap: 28px;
+    padding-bottom: 64px;
+  }
+  .hero-copy {
+    padding-left: 0;
+  }
+  .hero h1 {
+    font-size: 28px;
+  }
+  .hero-description {
+    font-size: 11px;
+  }
+  .hero-pagination {
+    margin-top: 20px;
+    justify-content: flex-start;
+  }
+  .hero-caption {
+    font-size: 9px;
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+  }
+  .hero-caption span {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .hero {
+    grid-template-columns: minmax(0, 1fr) 40%;
+    gap: 14px;
+    align-items: start;
+    padding: 30px 0 36px;
+  }
+  .hero-eyebrow {
+    font-size: 9px;
+    letter-spacing: 0;
+    margin-bottom: 9px;
+  }
+  .hero h1 {
+    font-size: 18px;
+    line-height: 1.6;
+    letter-spacing: -.5px;
+  }
+  .hero-description {
+    font-size: 9px;
+    line-height: 1.9;
+    margin: 12px 0 18px;
+  }
+  .hero-cta {
+    min-height: 36px;
+    font-size: 10px;
+    padding: 6px 12px;
+  }
+  .hero-art {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    width: 100%;
+    aspect-ratio: auto;
+    align-self: start;
+  }
+  .hero-art > .artwork {
+    border-radius: 12px;
+    flex-shrink: 0;
+  }
+  .hero-art > .artwork-placeholder svg {
+    width: 28px;
+    height: 28px;
+  }
+  .hero-art > .artwork-placeholder > span {
+    font-size: 8px;
+  }
+  .hero-art > .artwork-placeholder {
+    gap: 8px;
+  }
+  .hero-art > .artwork-placeholder small {
+    font-size: 8px;
+    bottom: 8px;
+    right: 8px;
+  }
+  .hero-caption {
+    position: static;
+    font-size: 8px;
+    margin-top: 8px;
+    color: var(--color-muted-foreground);
+    text-align: center;
+    display: block;
+  }
+  .hero-pagination {
+    margin-top: 14px;
+    gap: 14px;
+  }
+  .hero-dots button {
+    width: 20px;
+  }
+  .hero-dots span {
+    width: 5px;
+    height: 5px;
+  }
+  .hero-arrows {
+    display: none;
+  }
+}
+
+.hero-art .artwork-placeholder small {
+  display: none;
+}
+
+.hero-art:has(> img) .hero-caption {
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

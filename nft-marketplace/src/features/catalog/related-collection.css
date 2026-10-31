@@ -1,0 +1,132 @@
+.related-collection {
+  margin-top: 96px;
+}
+
+.related-collection > h2 {
+  font-size: 16px;
+  line-height: 26px;
+  color: var(--color-primary);
+  font-weight: 500;
+  padding-bottom: 6px;
+  margin-bottom: 32px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.related-nfts {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.related-nfts .nft-card-art {
+  padding: 20px;
+}
+
+.related-nfts .artwork {
+  aspect-ratio: 190 / 230;
+  height: auto;
+  border-radius: 12px;
+}
+
+.related-nfts .nft-card-copy {
+  padding: 12px 0 0;
+}
+
+.related-nfts .nft-card h3 {
+  font-size: 12px;
+}
+
+.related-nfts .nft-price {
+  font-size: 14px;
+}
+
+.related-nfts .nft-meta {
+  display: none;
+}
+
+.collection-pagination {
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  margin-top: 16px;
+}
+
+.collection-pagination button {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 28px;
+  border: 0;
+  padding: 0;
+  background: none;
+  min-width: 24px;
+  min-height: 24px;
+}
+
+.collection-pagination span {
+  width: 10px;
+  height: 10px;
+  border: 1px solid #c3823e;
+  border-radius: 50%;
+}
+
+.collection-pagination button[aria-pressed=true] span {
+  background: #d28c49;
+}
+
+@media (max-width: 1100px) {
+  .related-nfts {
+    gap: 18px;
+  }
+  .related-nfts .nft-card-art {
+    padding: 12px;
+  }
+}
+
+@media (max-width: 900px) {
+  .related-collection {
+    margin-top: 56px;
+  }
+  .related-nfts {
+    gap: 14px;
+  }
+  .related-nfts .nft-card-art {
+    padding: 8px;
+  }
+  .related-nfts .nft-card h3 {
+    font-size: 10px;
+  }
+  .related-nfts .nft-price {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 640px) {
+  .related-collection {
+    margin-top: 40px;
+  }
+  .related-collection > h2 {
+    font-size: 13px;
+    margin-bottom: 20px;
+  }
+  .related-nfts {
+    display: flex;
+    gap: 14px;
+    overflow-x: auto;
+    padding: 4px 3px 12px;
+    scroll-snap-type: x mandatory;
+  }
+  .related-nfts .nft-card {
+    flex: 0 0 43%;
+    scroll-snap-align: start;
+  }
+  .related-nfts .nft-card-art {
+    padding: 10px;
+  }
+  .related-nfts .nft-card h3 {
+    font-size: 10px;
+  }
+  .related-nfts .nft-price {
+    font-size: 12px;
+  }
+}

@@ -1,0 +1,333 @@
+.hero-mobile-title, .hero-mobile-description, .mobile-card-badge {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  /* 24px touch targets keep the dots centered at the same visual position. */
+  .home-page .hero {
+    touch-action: pan-y pinch-zoom;
+    position: relative;
+    display: block;
+    isolation: isolate;
+    height: 190px;
+    padding: 8px 16px 26px;
+    margin-bottom: 12px;
+    border-radius: 28px;
+    overflow: hidden;
+    background: radial-gradient(ellipse at 10% 0%, #775331 0, #674424 38%, #372213 75%, #2b1b10 100%);
+  }
+  .home-page {
+    position: relative;
+    padding: 84px 0 calc(132px + env(safe-area-inset-bottom));
+  }
+  .home-page .hero::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    width: 180px;
+    height: 300px;
+    border-radius: 50%;
+    background: #d1975220;
+    transform: rotate(-28deg);
+    left: -70px;
+    top: -75px;
+  }
+  .home-page .hero::after {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    width: 180px;
+    height: 300px;
+    border-radius: 50%;
+    transform: rotate(-28deg);
+    right: 55px;
+    top: -65px;
+    background: #c48d4920;
+  }
+  .home-page .hero-copy {
+    position: static;
+    padding: 0;
+    width: 58%;
+  }
+  .home-page .hero-eyebrow {
+    font-size: 12px;
+    line-height: 20px;
+    letter-spacing: 0;
+    margin: 0 0 2px;
+  }
+  .home-page .hero h1 {
+    font-size: 18px;
+    line-height: 28px;
+    font-weight: 600;
+    letter-spacing: 0;
+  }
+  .hero-desktop-title {
+    display: none;
+  }
+  .home-page .hero-desktop-description {
+    display: none;
+  }
+  .hero-mobile-title {
+    display: block;
+  }
+  .home-page .hero-mobile-description {
+    display: block;
+    max-width: 195px;
+    margin: 8px 0 0;
+    font-size: 12px;
+    line-height: 18px;
+    color: #c2ae8f;
+  }
+  .home-page .hero-cta {
+    justify-content: flex-start;
+    gap: 10px;
+    min-height: 28px;
+    padding: 0;
+    background: none;
+    color: #e3ad73;
+    font-size: 12px;
+    line-height: 20px;
+    box-shadow: none;
+  }
+  .home-page .hero-art {
+    position: absolute;
+    right: 16px;
+    top: 10px;
+    width: 38%;
+    max-width: 138px;
+    display: block;
+  }
+  .home-page .hero-art > .artwork {
+    width: 100%;
+    border-radius: 18px;
+  }
+  .home-page .hero-pagination {
+    position: absolute;
+    left: 0;
+    right: 0;
+    width: auto;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    top: 168px;
+  }
+  .home-page .hero-dots {
+    gap: 0;
+  }
+  .home-page .hero-dots button {
+    padding: 0;
+    width: 24px;
+    height: 24px;
+    min-height: 24px;
+  }
+  .home-page .hero-dots span {
+    width: 7px;
+    height: 7px;
+    background: #c18347;
+  }
+  .home-page .hero-dots button[aria-pressed=true] span {
+    background: #e3a15f;
+  }
+  .home-page .hero-caption {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    clip-path: inset(50%);
+    overflow: hidden;
+  }
+  .home-page .search-row {
+    position: absolute;
+    top: 24px;
+    left: 0;
+    right: 0;
+    gap: 8px;
+    height: 44px;
+    margin: 0;
+  }
+  .home-page .catalog-search {
+    min-height: 44px;
+    border: 0;
+    border-radius: 14px;
+    padding-left: 14px;
+    background: #281b15;
+  }
+  .home-page .catalog-search input {
+    font-size: 14px;
+    padding: 10px 0;
+  }
+  .home-page .catalog-search > svg {
+    width: 20px;
+    height: 20px;
+    color: #bfa579;
+  }
+  .home-page .search-submit {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    padding: 0;
+    border: 0;
+  }
+  .home-page .search-submit:focus-visible {
+    position: static;
+    clip-path: none;
+    width: auto;
+    height: auto;
+    padding: 0 8px;
+  }
+  .home-page .mobile-filter-trigger > button {
+    width: 44px;
+    height: 44px;
+    min-height: 44px;
+    padding: 0;
+    border: 0;
+    border-radius: 14px;
+    color: #38210d;
+    background: linear-gradient(140deg, #ab6e34, #df9e59);
+  }
+  .home-page .mobile-filter-trigger > button > svg {
+    width: 21px;
+    height: 21px;
+  }
+  .home-page .catalog-toolbar {
+    display: block;
+    margin: 0 0 20px;
+  }
+  .home-page .catalog-tabs {
+    gap: 0;
+    justify-content: space-between;
+    width: 100%;
+  }
+  .home-page .catalog-tabs button {
+    min-height: 32px;
+    font-size: 14px;
+    line-height: 22px;
+    padding-bottom: 3px;
+    white-space: nowrap;
+  }
+  .home-page .catalog-tabs button.selected {
+    font-weight: 600;
+    border-bottom-width: 2px;
+  }
+  .home-page .catalog-status {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    margin: 0;
+  }
+  .home-page .active-filters {
+    margin: 0 0 20px;
+  }
+  .home-page .nft-grid {
+    gap: 24px 16px;
+    padding-bottom: 32px;
+  }
+  .home-page .nft-card {
+    position: relative;
+  }
+  .home-page .nft-card:nth-child(even) {
+    transform: translateY(32px);
+  }
+  .home-page .nft-card-art {
+    padding: 12px 4px 20px;
+    border-radius: 20px;
+    overflow: hidden;
+    background: #261810;
+  }
+  .home-page .nft-card-art .artwork {
+    border-radius: 16px;
+  }
+  .home-page .nft-card-copy {
+    padding: 12px 8px 0;
+  }
+  .home-page .nft-card h3 {
+    font-size: 14px;
+    line-height: 18px;
+  }
+  .home-page .nft-price {
+    font-size: 16px;
+    line-height: 20px;
+  }
+  .home-page .nft-meta {
+    display: none;
+  }
+  .home-page .nft-price del {
+    display: none;
+  }
+  .home-page .nft-card-arrow {
+    display: none;
+  }
+  .home-page .home-lower {
+    display: none;
+  }
+  .home-page:has(#guia:target) .home-lower {
+    display: block;
+  }
+  .home-page .mobile-card-badge {
+    display: block;
+    position: absolute;
+    top: 16px;
+    left: 0;
+    padding: 6px 8px;
+    min-width: 68px;
+    background: #d99450;
+    color: #281709;
+    font-size: 12px;
+    line-height: 20px;
+  }
+  .home-page .mobile-card-favorite {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 0;
+    background: #322015;
+    color: #bfa579;
+  }
+  .mobile-nav-favorites {
+    position: relative;
+    display: grid;
+    place-items: center;
+    flex: 0 0 44px;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    box-shadow: none;
+  }
+  .sheet-content > .sort-control {
+    margin-top: 24px;
+    font-size: 12px;
+  }
+  .sheet-content > .sort-control select {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 374px) {
+  .home-page .hero {
+    padding-left: 12px;
+  }
+  .home-page .hero h1 {
+    font-size: 15px;
+    line-height: 24px;
+  }
+  .home-page .hero-mobile-description {
+    font-size: 11px;
+  }
+  .home-page .catalog-tabs button {
+    font-size: 12px;
+  }
+  .home-page .nft-card h3 {
+    font-size: 12px;
+  }
+}

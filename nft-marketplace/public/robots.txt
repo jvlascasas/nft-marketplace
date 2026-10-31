@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /perfil
+Disallow: /carteiras
+Disallow: /pagamento
+Disallow: /pedidos/
+Disallow: /lista-de-interesse
